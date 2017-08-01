@@ -2,12 +2,16 @@
 ---
 
 pxeserver_packages:
-  - nfs-utils
   - rsync
   - shim
   - syslinux
 
-pxeserver_services:
+pxeserver_packages_nfs:
+  - nfs-utils
+
+pxeserver_services: []
+
+pxeserver_services_nfs:
   - rpcbind
   - nfs-server
 

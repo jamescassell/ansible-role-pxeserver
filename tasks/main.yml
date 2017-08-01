@@ -11,7 +11,9 @@
   package:
     name: "{{ item }}"
     state: installed
-  with_items: "{{ pxeserver_packages }}"
+  with_flattened:
+    - "{{ pxeserver_packages }}"
+    - "{{ pxeserver_packages_nfs if pxeserver_nfs else [] }}"
   tags: pxeserver
 
 - name: Ensure services are started
@@ -19,7 +21,9 @@
     name: "{{ item }}"
     state: started
     enabled: true
-  with_items: "{{ pxeserver_services }}"
+  with_flattened:
+    - "{{ pxeserver_services }}"
+    - "{{ pxeserver_services_nfs if pxeserver_nfs else [] }}"
   tags: pxeserver
 
 - name: Create directory for PXEboot related files
@@ -67,6 +71,7 @@
     path: "{{ pxeserver_path }}/{{ item.name }}/rootfs"
     state: directory
   with_items: "{{ pxeserver_images }}"
+  when: pxeserver_nfs
   tags: pxeserver
 
 - name: Create NFS exports file
@@ -74,6 +79,7 @@
     src: etc_exports
     dest: /etc/exports
   notify: restart nfs
+  when: pxeserver_nfs
   tags: pxeserver
 
 - name: Create default menu for BIOS based systems

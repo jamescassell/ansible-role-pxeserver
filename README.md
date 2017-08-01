@@ -21,6 +21,7 @@ No specific requirements
 | `pxeserver_directory` | `pxelinux`                     | Subdirectory under TFTP root for PXE specific files                  |
 | `pxeserver_images`    | []                             | List of dicts specifying PXEboot images to be served. See below.     |
 | `pxeserver_ip`        | `ansible_default_ipv4.address` | IP address of the PXE server                                         |
+| `pxeserver_nfs`       | `true`                         | Whether to share a directory over NFS                                |
 
 You can specify the boot images to be served with the variable `pxeserver_images`, a dict containing the keys listed below. Keys are *mandatory* unless specified.
 
