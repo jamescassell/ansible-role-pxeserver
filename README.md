@@ -33,6 +33,8 @@ You can specify the boot images to be served with the variable `pxeserver_images
 | `kernel_url` | URL where to download the kernel image.                                |
 | `initrd_url` | URL where to download the initrd image.                                |
 | `label`      | Label for the PXE boot menu entry of this image.                       |
+| `ipappend`   | Optional. whether to include an `IPAPPEND 2` line in the boot entry    |
+| `append`     | Optional. string: kernel options to append. (e.g., kickstart location) |
 
 ## Dependencies
 
@@ -44,6 +46,7 @@ This role depends on:
 ## Example Playbook
 
 See the [test playbook](tests/test.yml)
+For a pxeboot OS install server, see the [pxeboot-os-install playbook](tests/pxeboot-os-install.yml)
 
 ## Testing
 

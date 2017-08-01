@@ -10,7 +10,10 @@ MENU DEFAULT
 {% endif %}
 MENU LABEL ^{{ loop.index }}) {{ image.label }}
 KERNEL {{ image.name }}/vmlinuz
-APPEND initrd={{ image.name }}/initrd.img {% if pxeserver_nfs %}root=nfs:{{ pxeserver_ip }}:{{ pxeserver_path }}/{{ image.name }}/rootfs{% endif %}
+{% if image.ipappend is defined and image.ipappend == true %}
+IPAPPEND 2
+{% endif %}
+APPEND initrd={{ image.name }}/initrd.img {% if pxeserver_nfs %}root=nfs:{{ pxeserver_ip }}:{{ pxeserver_path }}/{{ image.name }}/rootfs{% endif %} {{ image.append | default("") }}
 {% endfor %}
 
 LABEL {{ pxeserver_images|length + 1 }}
