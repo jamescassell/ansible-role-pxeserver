@@ -56,6 +56,7 @@
   get_url:
     url: "{{ item.kernel_url }}"
     dest: "{{ pxeserver_path }}/{{ item.name }}/vmlinuz"
+    force: "{{ pxeserver_force_download | default(omit) }}"
   with_items: "{{ pxeserver_images }}"
   tags: pxeserver
 
@@ -63,6 +64,7 @@
   get_url:
     url: "{{ item.initrd_url }}"
     dest: "{{ pxeserver_path }}/{{ item.name }}/initrd.img"
+    force: "{{ pxeserver_force_download | default(omit) }}"
   with_items: "{{ pxeserver_images }}"
   tags: pxeserver
 
