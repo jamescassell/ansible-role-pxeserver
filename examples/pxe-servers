@@ -1,0 +1,78 @@
+---
+os: el7
+disks:
+- 50
+memory: 2048
+cpus: 2
+
+
+pxeserver_dhcp: false
+pxeserver_force_download: yes
+pxeserver_ip: 192.168.50.3
+pxeserver_nfs: false
+
+pxeserver_images:
+- name: el6
+  ipappend: true
+  append: ks={{ ks_path }}/{{ ks_names['el6'] }} ksdevice=bootif
+#  default: true
+  kernel_url: "{{ mirror_url }}/centos/6/os/x86_64/isolinux/vmlinuz"
+  initrd_url: "{{ mirror_url }}/centos/6/os/x86_64/isolinux/initrd.img"
+  label: CentOS 6 x86_64
+
+- name: el7
+#  default: false
+  kernel_url: "{{ mirror_url }}/centos/7/os/x86_64/isolinux/vmlinuz"
+  initrd_url: "{{ mirror_url }}/centos/7/os/x86_64/isolinux/initrd.img"
+  append: ks={{ ks_path }}/{{ ks_names['el7'] }}
+  label: CentOS 7 x86_64
+
+- name: rhel6
+#  default: false
+  kernel_url: http://g104ks.llan.ll.mit.edu/pub/RHEL6.9_x64/isolinux/vmlinuz
+  initrd_url: http://g104ks.llan.ll.mit.edu/pub/RHEL6.9_x64/isolinux/initrd.img
+  append: ks={{ ks_path }}/{{ ks_names['rhel6'] }}
+  label: RHEL 6 x86_64
+
+- name: rhel7
+#  default: false
+  kernel_url: "{{ mirror_url }}/redhat/dist/rhel/server/7/7Server/x86_64/kickstart/isolinux/vmlinuz"
+  initrd_url: "{{ mirror_url }}/redhat/dist/rhel/server/7/7Server/x86_64/kickstart/isolinux/initrd.img"
+  append: ks={{ ks_path }}/{{ ks_names['rhel7'] }}
+  label: RHEL 7 x86_64
+
+dhcp_global_domain_name: llan.ll.mit.edu
+dhcp_subnets:
+- ip: 192.168.50.0
+  netmask: 255.255.255.0
+  range_begin: 192.168.50.200
+  range_end: 192.168.50.240
+  domain_name_servers:
+  - 9.9.9.9
+  - 1.1.1.1
+  routers: "{{ pxeserver_ip }}"
+  max_lease_time: 3600
+  next_server: "{{ pxeserver_ip }}"
+  filename: "{{ pxeserver_directory }}/pxelinux.0"
+
+network_connections:
+- name: System ens224
+  state: absent
+- name: ens224
+  interface_name: ens224
+  state: up
+  type: ethernet
+  ip:
+    address:
+    - "{{ pxeserver_ip }}/24"
+    auto6: false
+
+firewall:
+- trust:
+  - ens224
+  - ens192
+  masq: ens192
+  state: enabled
+  service:
+  - tftp
+  - ssh
